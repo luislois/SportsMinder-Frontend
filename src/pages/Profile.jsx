@@ -20,7 +20,7 @@ const Profile = () => {
         okType: 'danger',
         cancelText: 'Cancel',
         async onOk(){
-        const response = await fetch('https://dev-fhvg4rnmgf8fdbv6.us.auth0.com/dbconnections/change_password', {
+        const response = await fetch('httpss://dev-fhvg4rnmgf8fdbv6.us.auth0.com/dbconnections/change_password', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -211,7 +211,7 @@ const Profile = () => {
         okType: 'danger',
         cancelText: 'Cancel',
         async onOk(){
-          const response = await fetch(`http://accurate-happiness-production.up.railway.app/api/bookings/${bookingGeneratedId}`, {
+          const response = await fetch(`https://accurate-happiness-production.up.railway.app/api/bookings/${bookingGeneratedId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -242,7 +242,7 @@ const Profile = () => {
   const fetchData = useCallback(async () => {
     if(user){
       
-      const data = await fetch(`http://accurate-happiness-production.up.railway.app/api/bookings/user/${user.dni}`);
+      const data = await fetch(`https://accurate-happiness-production.up.railway.app/api/bookings/user/${user.dni}`);
       const bookingsData = await data.json();
       
       const mappedBookings = bookingsData.map((booking, index) => ({

@@ -27,7 +27,7 @@ const Home = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const data = await fetch('http://accurate-happiness-production.up.railway.app/api/tracks');
+          const data = await fetch('httpss://accurate-happiness-production.up.railway.app/api/tracks');
           const tracksData = await data.json();
           setTracks(tracksData);
         } catch (error) {
@@ -88,7 +88,7 @@ const Home = () => {
       const values = await form.validateFields();
       const trackData = values;
 
-      const response = await fetch('http://accurate-happiness-production.up.railway.app/api/tracks', {
+      const response = await fetch('https://accurate-happiness-production.up.railway.app/api/tracks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ const Home = () => {
         cancelText: 'Cancel',
         async onOk(){
           try{
-              const response = await fetch(`http://accurate-happiness-production.up.railway.app/api/tracks/${trackId}`, {
+              const response = await fetch(`https://accurate-happiness-production.up.railway.app/api/tracks/${trackId}`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json'
@@ -185,7 +185,7 @@ const Home = () => {
         async onOk(){
           setConfirmLoading(true);
 
-          const response = await fetch(`http://accurate-happiness-production.up.railway.app/api/tracks/${editTrackData.id}`, {
+          const response = await fetch(`https://accurate-happiness-production.up.railway.app/api/tracks/${editTrackData.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'

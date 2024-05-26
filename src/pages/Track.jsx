@@ -31,7 +31,7 @@ const Track = () => {
   useEffect(() => {
     // Realizar la llamada a la API para obtener los datos de la pista usando el ID
     const fetchData = async () => {
-      const dataTrack = await fetch(`http://accurate-happiness-production.up.railway.app/api/tracks/${trackId}`);
+      const dataTrack = await fetch(`https://accurate-happiness-production.up.railway.app/api/tracks/${trackId}`);
       const trackData = await dataTrack.json();
       setTrack(trackData);
     };
@@ -43,7 +43,7 @@ const Track = () => {
     const fetchData = async () => {
       if(selectedDate){
         const formattedDate = selectedDate.format('YYYY-MM-DD');
-        const dataBookings = await fetch(`http://accurate-happiness-production.up.railway.app/api/bookings/track/${trackId}/date/${formattedDate}`);
+        const dataBookings = await fetch(`https://accurate-happiness-production.up.railway.app/api/bookings/track/${trackId}/date/${formattedDate}`);
         const bookingsData = await dataBookings.json();
         setBookings(bookingsData);
       }
@@ -87,7 +87,7 @@ const Track = () => {
             endHour: endHour
           };
 
-        const response = await fetch('http://accurate-happiness-production.up.railway.app/api/bookings', {
+        const response = await fetch('https://accurate-happiness-production.up.railway.app/api/bookings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
