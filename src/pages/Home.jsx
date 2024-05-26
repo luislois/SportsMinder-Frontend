@@ -27,7 +27,7 @@ const Home = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const data = await fetch('httpss://accurate-happiness-production.up.railway.app/api/tracks');
+          const data = await fetch('https://accurate-happiness-production.up.railway.app/api/tracks');
           const tracksData = await data.json();
           setTracks(tracksData);
         } catch (error) {
