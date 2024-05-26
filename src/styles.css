@@ -1,0 +1,23 @@
+body {
+  background-color: #1F2833;
+  color: #ffffff;
+}
+
+header{
+  background-color: #1F2833;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  min-height: 40px;
+  width: 100%;
+}
+
+.page-container {
+  max-width: 1687px;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  margin-left: 100px;
+  margin-right: 100px;
+}
