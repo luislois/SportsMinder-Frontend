@@ -67,7 +67,7 @@ The frontend of sports minder application is designed to be user-friendly and re
 2. Open your browser and navigate to `http://localhost:3000` to see the application in action.
 
 ## Related Repositories
-- [Backend Repository]([https://github.com/your-username/project-name-backend](https://github.com/luislois/SportsMinder-Backend)) - Handles the backend logic and API endpoints.
+- [Backend Repository](https://github.com/luislois/SportsMinder-Backend) - Handles the backend logic and API endpoints.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
