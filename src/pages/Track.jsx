@@ -17,12 +17,15 @@ const Track = () => {
   const currentDate = dayjs().format('YYYY-MM-DD');
   const maxDatePicker = dayjs().add(30, 'days');
   const currentHourMinusOne = dayjs().add(-1, 'hour').format('HH:mm');
-  const startHourList = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
-  '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-  ];
-  const endHourList = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
-  '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'
-  ];
+ 
+  const generateHoursList = (startHour, endHour) => {
+    let hoursList = [];
+    for (let hour = startHour; hour <= endHour; hour++) {
+        hoursList.push(hour);
+    }
+    return hoursList;
+};
+
   const disabledDate = (current) => {
     const minDate = dayjs().subtract(1, 'days');
     return current < minDate;
@@ -31,7 +34,7 @@ const Track = () => {
   useEffect(() => {
     // Realizar la llamada a la API para obtener los datos de la pista usando el ID
     const fetchData = async () => {
-      const dataTrack = await fetch(`https://accurate-happiness-production.up.railway.app/api/tracks/${trackId}`);
+      const dataTrack = await fetch(`http://localhost:8080/api/tracks/${trackId}`);
       const trackData = await dataTrack.json();
       setTrack(trackData);
     };
@@ -43,7 +46,7 @@ const Track = () => {
     const fetchData = async () => {
       if(selectedDate){
         const formattedDate = selectedDate.format('YYYY-MM-DD');
-        const dataBookings = await fetch(`https://accurate-happiness-production.up.railway.app/api/bookings/track/${trackId}/date/${formattedDate}`);
+        const dataBookings = await fetch(`http://localhost:8080/api/bookings/track/${trackId}/date/${formattedDate}`);
         const bookingsData = await dataBookings.json();
         setBookings(bookingsData);
       }
@@ -87,7 +90,7 @@ const Track = () => {
             endHour: endHour
           };
 
-        const response = await fetch('https://accurate-happiness-production.up.railway.app/api/bookings', {
+        const response = await fetch('localhost:8080/api/bookings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -101,7 +104,7 @@ const Track = () => {
               type: 'error',
               title: 'ERROR',
               message: `Booking can not made on: ${date}`,
-              description: `Start time: ${startHour}, End time: ${endHour}.\n Erro: ${response.error}`,
+              description: `Start time: ${startHour}, End time: ${endHour}.\n Error: ${response.error}`,
               duration: 3,
           });
           
