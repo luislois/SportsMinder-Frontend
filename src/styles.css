@@ -14,7 +14,6 @@ header{
 }
 
 .page-container {
-  max-width: 1687px;
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
