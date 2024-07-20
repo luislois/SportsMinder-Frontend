@@ -5,6 +5,7 @@ import { Descriptions, Table, Tag, Typography, App as AntdApp } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { renderTagForSport, renderTagForType } from "../utils/Utils";
+import ApiService from "../utils/ApiService";
 
 const Profile = () => {
   const { modal, notification } = AntdApp.useApp();
@@ -109,9 +110,7 @@ const Profile = () => {
       ],
 
       onFilter: (value, record) => record.sport === value,
-      render: (text) => {
-        return renderTagForSport(text);
-      },
+      render: (text) => renderTagForSport(text),
     },
     {
       title: "Type",
@@ -122,9 +121,7 @@ const Profile = () => {
         { text: "Indoor", value: "indoor" },
       ],
       onFilter: (value, record) => record.type === value,
-      render: (text) => {
-        return renderTagForType(text);
-      },
+      render: (text) => renderTagForType(text),
     },
     {
       title: "Date",
@@ -132,12 +129,7 @@ const Profile = () => {
       key: "date",
       defaultSortOrder: "descend",
       sortDirections: ["ascend", "descend", "ascend"],
-      render: (item) => {
-        const formattedDate = dayjs(item, "YYYY-MM-DD").format(
-          "ddd, DD MMM YYYY"
-        );
-        return formattedDate;
-      },
+      render: (item) => dayjs(item, "YYYY-MM-DD").format("ddd, DD MMM YYYY"),
       sorter: (a, b) => {
         const dateComparison =
           dayjs(a.date).valueOf() - dayjs(b.date).valueOf();
@@ -155,19 +147,13 @@ const Profile = () => {
       title: "Start Hour",
       dataIndex: "startHour",
       key: "startHour",
-      render: (item) => {
-        const formattedStartHour = dayjs(item, "HH:mm:ss").format("HH:mm");
-        return formattedStartHour;
-      },
+      render: (item) => dayjs(item, "HH:mm:ss").format("HH:mm"),
     },
     {
       title: "End Hour",
       dataIndex: "endHour",
       key: "endHour",
-      render: (item) => {
-        const formattedEndHour = dayjs(item, "HH:mm:ss").format("HH:mm");
-        return formattedEndHour;
-      },
+      render: (item) => dayjs(item, "HH:mm:ss").format("HH:mm"),
     },
     {
       title: "Status",
@@ -192,9 +178,10 @@ const Profile = () => {
       },
     },
     {
+      key: "action",
       render: (item) => {
-        const isReserved = "reserved" === item.status;
-        if (isReserved === true) {
+        const isReserved = item.status === "reserved";
+        if (isReserved) {
           return (
             <Typography.Link
               style={{ color: "red" }}
@@ -228,17 +215,8 @@ const Profile = () => {
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
-        const response = await fetch(
-          `http://localhost:8080/api/bookings/${bookingGeneratedId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.ok) {
-          fetchData();
+        const response = await ApiService.deleteBooking(bookingGeneratedId);
+        if (response === 204) {
           notification.open({
             placement: "top",
             type: "success",
@@ -246,6 +224,9 @@ const Profile = () => {
             message: `Booking delete succesfully`,
             duration: 3,
           });
+          setBookings((prevBookings) =>
+            prevBookings.filter((b) => b.bookingId !== booking.bookingId)
+          );
         } else {
           notification.open({
             placement: "top",
@@ -260,11 +241,7 @@ const Profile = () => {
   };
   const fetchData = useCallback(async () => {
     if (user) {
-      const data = await fetch(
-        `http://localhost:8080/api/bookings/user/${user.dni}`
-      );
-      const bookingsData = await data.json();
-      console.log(bookingsData);
+      const bookingsData = await ApiService.getBookingsByUserId(user.dni);
       const mappedBookings = bookingsData.map((booking, index) => ({
         key: index,
         bookingId: booking.id,
@@ -293,6 +270,7 @@ const Profile = () => {
         <Table
           dataSource={bookings}
           columns={columns}
+          rowKey="key"
           title={() => <h2>Bookings</h2>}
         />
       </div>

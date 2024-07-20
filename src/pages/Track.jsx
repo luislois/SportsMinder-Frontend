@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import { renderTagForSport, srcTrackImage } from "../utils/Utils";
 import { useAuth0 } from "@auth0/auth0-react";
+import ApiService from "../utils/ApiService";
 
 const Track = () => {
   const { modal, notification } = AntdApp.useApp();
@@ -46,12 +47,8 @@ const Track = () => {
   useEffect(() => {
     // Realizar la llamada a la API para obtener los datos de la pista usando el ID
     const fetchData = async () => {
-      const dataTrack = await fetch(
-        `http://localhost:8080/api/tracks/${trackId}`
-      );
-      const trackData = await dataTrack.json();
+      const trackData = await ApiService.getTrack(trackId);
       setTrack(trackData);
-      console.log(trackData);
     };
     fetchData();
   }, [trackId]);
@@ -61,10 +58,10 @@ const Track = () => {
     const fetchData = async () => {
       if (selectedDate) {
         const formattedDate = selectedDate.format("YYYY-MM-DD");
-        const dataBookings = await fetch(
-          `http://localhost:8080/api/bookings/track/${trackId}/date/${formattedDate}`
+        const bookingsData = await ApiService.getBookingsByTrackIdAndDate(
+          trackId,
+          formattedDate
         );
-        const bookingsData = await dataBookings.json();
         setBookings(bookingsData);
       }
     };
@@ -107,15 +104,8 @@ const Track = () => {
             endHour: endHour,
           };
 
-          const response = await fetch("http://localhost:8080/api/bookings", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(bookingData),
-          });
-
-          if (!response.ok) {
+          const response = await ApiService.postBooking(bookingData);
+          if (response.status != 201) {
             notification.open({
               placement: "top",
               type: "error",
@@ -125,7 +115,7 @@ const Track = () => {
               duration: 3,
             });
           } else {
-            const newBooking = await response.json();
+            const newBooking = response.data;
             // I update the status of the reserves with the new
             setBookings([...bookings, newBooking]);
             notification.open({
@@ -137,15 +127,7 @@ const Track = () => {
               duration: 3,
             });
           }
-        } catch (error) {
-          notification.open({
-            placement: "top",
-            type: "error",
-            title: "ERROR",
-            message: `You have to log in first.`,
-            duration: 3,
-          });
-        }
+        } catch (error) {}
       },
     });
   };

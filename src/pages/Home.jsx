@@ -5,14 +5,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import TrackForm from "../components/Form";
 import "../styles.css";
 import TrackCard from "../components/TrackCard";
-
+import ApiService from "../utils/ApiService";
 const { Option } = Select;
 
 const Home = () => {
   const { modal, notification } = AntdApp.useApp();
   const [tracks, setTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [filter, setFilter] = useState({ sport: "", type: "" });
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -21,16 +20,10 @@ const Home = () => {
 
   const userRoles = user ? user["_roles"] : "Loading...";
   const isAdmin = userRoles && userRoles.includes("Admin");
-
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await fetch("http://localhost:8080/api/tracks");
-        const tracksData = await data.json();
-        setTracks(tracksData);
-      } catch (error) {
-        console.error("Error fetching data from the API:", error);
-      }
+      const response = await ApiService.getAllTracks();
+      setTracks(response);
     };
     fetchData();
   }, []);
@@ -77,43 +70,26 @@ const Home = () => {
   };
 
   const addTrack = async (form) => {
-    setConfirmLoading(true);
     try {
       const trackData = await form.validateFields();
-      console.log(trackData);
-      const response = await fetch("http://localhost:8080/api/tracks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trackData),
-      });
 
-      if (!response.ok) {
-        throw new Error("Track could not be added");
-      }
-
-      const newTrack = await response.json();
+      const newTrack = await ApiService.addTrack(trackData);
       // Update the state of tracks with the new track
       setTracks((prevTracks) => [...prevTracks, newTrack]);
+      form.resetFields();
 
       notification.open({
         placement: "top",
         type: "success",
         title: "SUCCESS",
         message: "Track added successfully.",
-        duration: 3,
+        duration: 2,
       });
 
       setTimeout(() => {
-        form.resetFields();
         closeModalAdd();
-        setConfirmLoading(false);
-      }, 500);
+      }, 100);
     } catch (error) {
-      form.resetFields();
-      setConfirmLoading(false);
-      console.error("Error adding track:", error);
       notification.open({
         placement: "top",
         type: "error",
@@ -133,16 +109,8 @@ const Home = () => {
       cancelText: "Cancel",
       async onOk() {
         try {
-          const response = await fetch(
-            `http://localhost:8080/api/tracks/${trackId}`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          if (response.ok) {
+          const response = await ApiService.deleteTrack(trackId);
+          if (response === 204) {
             notification.open({
               placement: "top",
               type: "success",
@@ -153,7 +121,6 @@ const Home = () => {
             setTracks(tracks.filter((track) => track.id !== trackId));
           }
         } catch (error) {
-          console.error("Error deleting track:", error);
           notification.open({
             placement: "top",
             type: "error",
@@ -175,26 +142,19 @@ const Home = () => {
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
-        setConfirmLoading(true);
 
-        const response = await fetch(
-          `http://localhost:8080/api/tracks/${editTrackData.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(trackData),
-          }
+        const response = await ApiService.editTrack(
+          editTrackData.id,
+          trackData
         );
-        if (response.ok) {
+        if (response.status) {
           const editedTrackIndex = tracks.findIndex(
             (track) => track.id === editTrackData.id
           );
           const updatedTracks = [...tracks];
           updatedTracks[editedTrackIndex] = {
             ...updatedTracks[editedTrackIndex],
-            ...trackData,
+            ...response.data,
           };
           setTracks(updatedTracks);
 
@@ -208,13 +168,11 @@ const Home = () => {
           setTimeout(() => {
             form.resetFields();
             closeModalEdit();
-            setConfirmLoading(false);
           }, 500);
         } else {
           setTimeout(() => {
             form.resetFields();
             closeModalEdit();
-            setConfirmLoading(false);
           }, 500);
           notification.open({
             placement: "top",
