@@ -6,8 +6,8 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Auth0Provider
-    domain="dev-fhvg4rnmgf8fdbv6.us.auth0.com"
-    clientId="uTkH5t8G9WuR4ONgBtIWAIiNYeYmhlIy"
+    domain={import.meta.env.VITE_AUTH0_DOMAIN}
+    clientId={import.meta.env.VITE_AUTH0_CLIENTID}
     useRefreshTokens={true}
     cacheLocation="localstorage"
     scope="read:current_user update:current_user_metadata"

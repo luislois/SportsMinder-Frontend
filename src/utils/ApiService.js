@@ -1,4 +1,3 @@
-import useResponsiveObserver from 'antd/es/_util/responsiveObserver';
 import axios from 'axios'
 
 const BASE_URL = "http://localhost:8080/api/"

@@ -35,16 +35,37 @@ const TrackForm = ({
       onCancel={onCancel}
     >
       <Form form={form} layout="vertical" initialValues={initialValues}>
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[
-            { required: true, message: "Please enter the name of the track" },
-            { max: 50, message: "Name cannot exceed 50 characters" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the name of the track",
+                },
+                { max: 50, message: "Name cannot exceed 50 characters" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="price"
+              label="Price"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the price of the track",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item

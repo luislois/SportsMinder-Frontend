@@ -1,12 +1,9 @@
-// PayPalButton.js
 import React from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-// Initial options for the PayPal script provider
 const initialOptions = {
-  clientId:
-    "AaLSYUzVAGKqAEGYRA0PCR-OtbNlfJnfKS66vOqbZ_zHeiCHuePbKLaIaKM-saacHqcxEDZ6ccdCnjj0", // Replace with your actual client ID
-  currency: "USD", // Replace with the currency you want to use
+  clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+  currency: "USD",
 };
 
 const PayPalButton = ({ amount, onSuccess }) => {

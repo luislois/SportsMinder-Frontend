@@ -7,6 +7,7 @@ import {
   Typography,
   Tag,
   Spin,
+  Modal,
   App as AntdApp,
 } from "antd";
 import dayjs from "dayjs";
@@ -29,6 +30,8 @@ const Track = () => {
   const maxDatePicker = dayjs().add(30, "days");
   const currentHourMinusOne = dayjs().add(-1, "hour").format("HH:mm");
   const [loading, setLoading] = useState(true);
+  const [isPayPalVisible, setIsPayPalVisible] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
 
   const generateHoursList = (startHour, endHour) => {
     let hoursList = [];
@@ -88,7 +91,7 @@ const Track = () => {
     modal.confirm({
       title: `Are you sure you want to reserve on ${date}, \n Start time: ${startHour}, end time: ${endHour}?`,
       content: "We redirect you to the payment page.",
-      okText: "Yes",
+      okText: "Proceed to Payment",
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
@@ -96,49 +99,63 @@ const Track = () => {
           "YYYY-MM-DD"
         );
         const bookingGeneratedId = `${trackId}-${formattedDate}-${startHour}`;
-        try {
-          const bookingData = {
-            bookingId: bookingGeneratedId,
-            track: {
-              id: track.id,
-              name: track.name,
-              sport: track.sport,
-              type: track.type,
-            },
-            idUser: user.dni,
-            date: formattedDate,
-            startHour: startHour,
-            endHour: endHour,
-          };
-
-          const response = await ApiService.postBooking(bookingData);
-          if (response.status != 201) {
-            notification.open({
-              placement: "top",
-              type: "error",
-              title: "ERROR",
-              message: `Booking can not made on: ${date}`,
-              description: `Start time: ${startHour}, End time: ${endHour}.\n Error: ${response.error}`,
-              duration: 3,
-            });
-          } else {
-            const newBooking = response.data;
-            // I update the status of the reserves with the new
-            setBookings([...bookings, newBooking]);
-            notification.open({
-              placement: "top",
-              type: "success",
-              title: "SUCCESS",
-              message: `Payment Recived, booking made on: ${date}`,
-              description: `Start time: ${startHour}, End time: ${endHour}.`,
-              duration: 3,
-            });
-          }
-        } catch (error) {}
+        const bookingData = {
+          bookingId: bookingGeneratedId,
+          track: {
+            id: track.id,
+            name: track.name,
+            sport: track.sport,
+            type: track.type,
+          },
+          idUser: user.dni,
+          date: formattedDate,
+          startHour: startHour,
+          endHour: endHour,
+        };
+        setBookingData(bookingData);
+        setIsPayPalVisible(true);
       },
     });
   };
 
+  const handlePayment = async (paymentDetails) => {
+    try {
+      const response = await ApiService.postBooking(bookingData);
+      if (response.status != 201) {
+        notification.open({
+          placement: "top",
+          type: "error",
+          title: "ERROR",
+          message: `Booking can not made on: ${date}`,
+          description: `Start time: ${startHour}, End time: ${endHour}.\n Error: ${response.error}`,
+          duration: 3,
+        });
+      } else {
+        const newBooking = response.data;
+        // I update the status of the reserves with the new
+        setBookings([...bookings, newBooking]);
+        notification.open({
+          placement: "top",
+          type: "success",
+          title: "SUCCESS",
+          message: `Payment Recived, booking made on: ${date}`,
+          description: `Start time: ${startHour}, End time: ${endHour}.`,
+          duration: 3,
+        });
+      }
+    } catch (error) {
+      notification.open({
+        placement: "top",
+        type: "error",
+        title: "Payment Error",
+        message: "There was an error processing your payment.",
+        description: error.message,
+        duration: 3,
+      });
+    } finally {
+      setIsPayPalVisible(false);
+    }
+  };
   const columns = [
     {
       title: "Date",
@@ -253,6 +270,17 @@ const Track = () => {
             )}
           </div>
           <div>
+            <Modal
+              title="Pay with PayPal"
+              open={isPayPalVisible}
+              footer={null} // Hide default footer
+              onCancel={() => setIsPayPalVisible(false)}
+            >
+              <PayPalButton
+                amount={track.price}
+                onSuccess={(details) => handlePayment(details)}
+              />
+            </Modal>
             <Row
               style={{ marginTop: "20px" }}
               gutter={[16, 16]}
