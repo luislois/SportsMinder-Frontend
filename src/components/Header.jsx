@@ -1,34 +1,61 @@
-import { Link } from 'react-router-dom';
-import { Button} from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { LoginButton, SigninButton } from './Buttons';
-import { useAuth0 } from '@auth0/auth0-react';
-import logo from '../assets/logo.png';
-import '../styles.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { UserOutlined, MenuOutlined, HomeOutlined } from "@ant-design/icons";
+import { LoginButton, SigninButton } from "./Buttons";
+import logo from "../assets/logo.png";
+import "../styles/Header.css";
 
-const Header = () => {
-  const {isAuthenticated } = useAuth0();
+const Header = ({ isAuthenticated }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <header>
-          <div>
-          <Link to="/"> 
-            <img src={logo} alt="Logo" style={{ height: 50, marginTop: 10 }} />
+      <div className="header-content">
+        <div className="header-logo">
+          <Link to="/">
+            <img src={logo} alt="Logo" />
           </Link>
-          </div>
-          <div>
-            {!isAuthenticated && (
-              <SigninButton/> 
+        </div>
+        <div className="header-actions">
+          <Button
+            className="menu-button"
+            icon={<MenuOutlined />}
+            onClick={toggleMenu}
+            style={{ display: "none" }}
+          />
+          <div className={`nav-menu ${isMenuOpen ? "open" : ""}`}>
+            <Link to="/" onClick={toggleMenu}>
+              <Button
+                type="secondary"
+                icon={<HomeOutlined />}
+                className="profile-button"
+              />
+            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link to="/profile" onClick={toggleMenu}>
+                  <Button
+                    type="secondary"
+                    icon={<UserOutlined />}
+                    className="profile-button"
+                  />
+                </Link>
+                <LoginButton />
+              </>
+            ) : (
+              <>
+                <SigninButton />
+                <LoginButton />
+              </>
             )}
-            {isAuthenticated && (
-              <Link to="/profile"> 
-                <Button type='secondary' icon = <UserOutlined/> style={{ marginRight: '15px'}} /> 
-              </Link> 
-            )}
-            
-            <LoginButton/>
           </div>
-    </header> 
+        </div>
+      </div>
+    </header>
   );
 };
 

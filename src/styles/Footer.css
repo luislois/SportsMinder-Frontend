@@ -1,0 +1,62 @@
+footer {
+    background-color: #1F2833; /* Match the theme */
+    color: #ffffff; /* Text color */
+    padding: 20px 0; /* Vertical padding */
+    text-align: center; /* Center text */
+    width: 100%;
+    position: relative;
+    bottom: 0;
+  }
+  
+  .footer-content {
+    max-width: 1200px; /* Limit width */
+    margin: 0 auto; /* Center horizontally */
+    padding: 0 20px; /* Horizontal padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .footer-nav {
+    margin-bottom: 10px; /* Space between nav and info */
+  }
+  
+  .footer-nav ul {
+    list-style: none; /* Remove bullets */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px; /* Space between links */
+    justify-content: center; /* Center links */
+  }
+  
+  .footer-nav li {
+    display: inline; /* Display list items in a row */
+  }
+  
+  .footer-nav a {
+    color: #ffffff; /* Link color */
+    text-decoration: none; /* Remove underline */
+    font-size: 14px; /* Font size */
+  }
+  
+  .footer-nav a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
+  
+  .footer-info p {
+    margin: 0; /* Remove default margin */
+    font-size: 12px; /* Font size for copyright */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer-nav ul {
+      flex-direction: column; /* Stack links vertically on small screens */
+      gap: 10px; /* Reduce space between links */
+    }
+  
+    .footer-info p {
+      font-size: 10px; /* Smaller font size for small screens */
+    }
+  }

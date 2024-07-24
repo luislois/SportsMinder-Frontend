@@ -6,14 +6,16 @@ import {
   Col,
   Typography,
   Tag,
+  Spin,
   App as AntdApp,
 } from "antd";
 import dayjs from "dayjs";
 import { useParams } from "react-router-dom";
-import Header from "../components/Header";
+import Map from "../components/Map";
 import { renderTagForSport, srcTrackImage } from "../utils/Utils";
 import { useAuth0 } from "@auth0/auth0-react";
 import ApiService from "../utils/ApiService";
+import PayPalButton from "../components/PaypalButton";
 
 const Track = () => {
   const { modal, notification } = AntdApp.useApp();
@@ -26,6 +28,7 @@ const Track = () => {
   const currentDate = dayjs().format("YYYY-MM-DD");
   const maxDatePicker = dayjs().add(30, "days");
   const currentHourMinusOne = dayjs().add(-1, "hour").format("HH:mm");
+  const [loading, setLoading] = useState(true);
 
   const generateHoursList = (startHour, endHour) => {
     let hoursList = [];
@@ -45,16 +48,20 @@ const Track = () => {
   };
 
   useEffect(() => {
-    // Realizar la llamada a la API para obtener los datos de la pista usando el ID
     const fetchData = async () => {
-      const trackData = await ApiService.getTrack(trackId);
-      setTrack(trackData);
+      try {
+        const trackData = await ApiService.getTrack(trackId);
+        setTrack(trackData);
+      } catch (error) {
+        console.error("Failed to fetch track data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [trackId]);
 
   useEffect(() => {
-    // Realizar la llamada a la API para obtener los datos de las reservas usando el ID de la pista y la fecha del date picker
     const fetchData = async () => {
       if (selectedDate) {
         const formattedDate = selectedDate.format("YYYY-MM-DD");
@@ -218,51 +225,62 @@ const Track = () => {
     : [];
 
   return (
-    <div className="page-container">
-      <Header />
+    <div>
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          <div style={{ marginTop: 20 }}>
+            {track && (
+              <>
+                <img
+                  src={srcTrackImage(track.sport, track.type)}
+                  alt="track Image"
+                />
+                <Row style={{ marginTop: "20px" }}>
+                  <Col>
+                    <h1>{track.name}</h1>
+                  </Col>
+                </Row>
 
-      <div style={{ marginTop: 20 }}>
-        {track && (
-          <>
-            <img
-              src={srcTrackImage(track.sport, track.type)}
-              alt="track Image"
-            />
-            <Row style={{ marginTop: "20px" }}>
+                {renderTagForSport(track.sport)}
+                <Tag color={track.type === "outdoor" ? "cyan" : "purple"}>
+                  {track.type.toUpperCase()}
+                </Tag>
+              </>
+            )}
+          </div>
+          <div>
+            <Row
+              style={{ marginTop: "20px" }}
+              gutter={[16, 16]}
+              justify="start"
+            >
               <Col>
-                <h1>{track.name}</h1>
+                <DatePicker
+                  onChange={handleDateChange}
+                  disabledDate={disabledDate}
+                  status={datePickerStatus}
+                  format={"ddd, DD MMM YYYY"}
+                  defaultValue={selectedDate}
+                  maxDate={maxDatePicker}
+                />
               </Col>
             </Row>
 
-            {renderTagForSport(track.sport)}
-            <Tag color={track.type === "outdoor" ? "cyan" : "purple"}>
-              {track.type.toUpperCase()}
-            </Tag>
-          </>
-        )}
-      </div>
-      <div>
-        <Row style={{ marginTop: "20px" }} gutter={[16, 16]} justify="start">
-          <Col>
-            <DatePicker
-              onChange={handleDateChange}
-              disabledDate={disabledDate}
-              status={datePickerStatus}
-              format={"ddd, DD MMM YYYY"}
-              defaultValue={selectedDate}
-              maxDate={maxDatePicker}
+            <Table
+              style={{ marginTop: 20 }}
+              pagination={{ pageSize: 8 }}
+              dataSource={dataSource}
+              columns={columns}
+              title={() => <h2>Bookings</h2>}
             />
-          </Col>
-        </Row>
-
-        <Table
-          style={{ marginTop: 20 }}
-          pagination={{ pageSize: 8 }}
-          dataSource={dataSource}
-          columns={columns}
-          title={() => <h2>Bookings</h2>}
-        />
-      </div>
+          </div>
+          <Map trackName={track.name} lat={track.lat} lng={track.lng}></Map>
+        </>
+      )}
     </div>
   );
 };

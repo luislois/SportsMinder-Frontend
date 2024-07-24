@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import Header from "../components/Header";
-import { List, Col, Row, Select, Button, Form, App as AntdApp } from "antd";
+import { List, Col, Row, Select, Button, Spin, App as AntdApp } from "antd";
 import { useAuth0 } from "@auth0/auth0-react";
 import TrackForm from "../components/Form";
 import "../styles.css";
@@ -17,13 +16,19 @@ const Home = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [editTrackData, setEditTrackData] = useState(null);
   const { user } = useAuth0();
+  const [loading, setLoading] = useState(true);
 
   const userRoles = user ? user["_roles"] : "Loading...";
   const isAdmin = userRoles && userRoles.includes("Admin");
   useEffect(() => {
     const fetchData = async () => {
-      const response = await ApiService.getAllTracks();
-      setTracks(response);
+      try {
+        const response = await ApiService.getAllTracks();
+        setTracks(response);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -61,7 +66,7 @@ const Home = () => {
   };
 
   const closeModalEdit = () => {
-    setOpenEdit();
+    setOpenEdit(false);
   };
 
   const showModalEdit = (track) => {
@@ -72,9 +77,7 @@ const Home = () => {
   const addTrack = async (form) => {
     try {
       const trackData = await form.validateFields();
-
       const newTrack = await ApiService.addTrack(trackData);
-      // Update the state of tracks with the new track
       setTracks((prevTracks) => [...prevTracks, newTrack]);
       form.resetFields();
 
@@ -135,6 +138,7 @@ const Home = () => {
 
   const editTrack = async (form) => {
     const trackData = await form.validateFields();
+    console.log("Track data: " + trackData.lat);
     modal.confirm({
       title: "Are you sure you want edit this track?",
       content: "This action can not be undone.",
@@ -142,12 +146,11 @@ const Home = () => {
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
-
         const response = await ApiService.editTrack(
           editTrackData.id,
           trackData
         );
-        if (response.status) {
+        if (response.status === 200) {
           const editedTrackIndex = tracks.findIndex(
             (track) => track.id === editTrackData.id
           );
@@ -170,10 +173,6 @@ const Home = () => {
             closeModalEdit();
           }, 500);
         } else {
-          setTimeout(() => {
-            form.resetFields();
-            closeModalEdit();
-          }, 500);
           notification.open({
             placement: "top",
             type: "error",
@@ -181,94 +180,102 @@ const Home = () => {
             message: "Failed to edit track",
             duration: 3,
           });
+          setTimeout(() => {
+            form.resetFields();
+            closeModalEdit();
+          }, 500);
         }
       },
     });
   };
 
   return (
-    <div className="page-container">
-      <Header />
-
-      <div style={{ marginTop: 20 }}>
-        <TrackForm
-          title="Add Track"
-          initialValues={null}
-          openModal={openAdd}
-          onOk={addTrack}
-          onCancel={closeModalAdd}
-        />
-        <Row gutter={[16, 16]} justify="end">
-          {isAdmin && (
+    <div>
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Spin size="large" /> {/* Display spinner while loading */}
+        </div>
+      ) : (
+        <div style={{ marginTop: 20 }}>
+          <TrackForm
+            title="Add Track"
+            initialValues={null}
+            openModal={openAdd}
+            onOk={addTrack}
+            onCancel={closeModalAdd}
+          />
+          <Row gutter={[16, 16]} justify="end">
+            {isAdmin && (
+              <Col>
+                <Button type="primary" onClick={showModalAdd}>
+                  + Add Track
+                </Button>
+              </Col>
+            )}
             <Col>
-              <Button type="primary" onClick={showModalAdd}>
-                + Add Track
+              <Select
+                style={{ width: 120 }}
+                placeholder="Filter by sport"
+                value={filter.sport}
+                onChange={(value) => handleFilterChange("sport", value)}
+              >
+                <Option value="">All</Option>
+                <Option value="Football">Football</Option>
+                <Option value="Basket">Basket</Option>
+                <Option value="Padel">Padel</Option>
+                <Option value="Tennis">Tennis</Option>
+              </Select>
+            </Col>
+            <Col>
+              <Select
+                style={{ width: 120 }}
+                placeholder="Filter by type"
+                value={filter.type}
+                onChange={(value) => handleFilterChange("type", value)}
+              >
+                <Option value="">All</Option>
+                <Option value="indoor">Indoor</Option>
+                <Option value="outdoor">Outdoor</Option>
+              </Select>
+            </Col>
+            <Col>
+              <Button
+                style={{ color: "#ffffff" }}
+                type="primary"
+                ghost
+                onClick={handleResetFilter}
+              >
+                Reset Filters
               </Button>
             </Col>
-          )}
-          <Col>
-            <Select
-              style={{ width: 120 }}
-              placeholder="Filtrer from sport"
-              value={filter.sport}
-              onChange={(value) => handleFilterChange("sport", value)}
-            >
-              <Option value="">All</Option>
-              <Option value="Football">Football</Option>
-              <Option value="Basket">Basket</Option>
-              <Option value="Padel">Padel</Option>
-              <Option value="Tennis">Tennis</Option>
-            </Select>
-          </Col>
-          <Col>
-            <Select
-              style={{ width: 120 }}
-              placeholder="Filter from type"
-              value={filter.type}
-              onChange={(value) => handleFilterChange("type", value)}
-            >
-              <Option value="">All</Option>
-              <Option value="indoor">Indoor</Option>
-              <Option value="outdoor">Outdoor</Option>
-            </Select>
-          </Col>
-          <Col>
-            <Button
-              style={{ color: "#ffffff" }}
-              type="primary"
-              ghost
-              onClick={handleResetFilter}
-            >
-              Reset Filters
-            </Button>
-          </Col>
-        </Row>
+          </Row>
 
-        <List
-          style={{ marginTop: "20px" }}
-          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
-          dataSource={filteredTracks}
-          renderItem={(track) => (
-            <List.Item>
-              <TrackCard
-                track={track}
-                isAdmin={isAdmin}
-                showModalEdit={showModalEdit}
-                deleteTrack={deleteTrack}
-              />
-            </List.Item>
-          )}
-        />
-        {openEdit && (
-          <TrackForm
-            title="Edit Track"
-            initialValues={editTrackData}
-            openModal={openEdit}
-            onOk={editTrack}
-            onCancel={closeModalEdit}
+          <List
+            style={{ marginTop: "20px" }}
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
+            dataSource={filteredTracks}
+            renderItem={(track) => (
+              <List.Item>
+                <TrackCard
+                  track={track}
+                  isAdmin={isAdmin}
+                  showModalEdit={showModalEdit}
+                  deleteTrack={deleteTrack}
+                />
+              </List.Item>
+            )}
           />
-        )}
-      </div>
+          {openEdit && (
+            <TrackForm
+              title="Edit Track"
+              initialValues={editTrackData}
+              openModal={openEdit}
+              onOk={editTrack}
+              onCancel={closeModalEdit}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

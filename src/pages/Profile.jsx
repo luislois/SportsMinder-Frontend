@@ -1,7 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-import Header from "../components/Header";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Descriptions, Table, Tag, Typography, App as AntdApp } from "antd";
+import {
+  Descriptions,
+  Table,
+  Tag,
+  Typography,
+  Spin,
+  App as AntdApp,
+} from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { renderTagForSport, renderTagForType } from "../utils/Utils";
@@ -12,6 +18,7 @@ const Profile = () => {
   const { user } = useAuth0();
   const { name, last_name, _phone_number, dni, email } = user || [];
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleResetPassword = () => {
     modal.confirm({
@@ -60,27 +67,27 @@ const Profile = () => {
     {
       key: "1",
       label: "First Name",
-      children: name || "Loading...",
+      children: name,
     },
     {
       key: "2",
       label: "Last Name",
-      children: last_name || "Loading...",
+      children: last_name,
     },
     {
       key: "3",
       label: "Phone number",
-      children: _phone_number || "Loading...",
+      children: _phone_number,
     },
     {
       key: "4",
       label: "Dni",
-      children: dni || "Loading...",
+      children: dni,
     },
     {
       key: "5",
       label: "Email",
-      children: email || "Loading...",
+      children: email,
     },
     {
       key: "6",
@@ -239,22 +246,28 @@ const Profile = () => {
       },
     });
   };
+
   const fetchData = useCallback(async () => {
     if (user) {
-      const bookingsData = await ApiService.getBookingsByUserId(user.dni);
-      const mappedBookings = bookingsData.map((booking, index) => ({
-        key: index,
-        bookingId: booking.id,
-        track_id: booking.track.id,
-        name: booking.track.name,
-        sport: booking.track.sport,
-        type: booking.track.type,
-        date: booking.date,
-        startHour: booking.startHour,
-        endHour: booking.endHour,
-        status: booking.status,
-      }));
-      setBookings(mappedBookings);
+      try {
+        const bookingsData = await ApiService.getBookingsByUserId(user.dni);
+        const mappedBookings = bookingsData.map((booking, index) => ({
+          key: index,
+          bookingId: booking.id,
+          track_id: booking.track.id,
+          name: booking.track.name,
+          sport: booking.track.sport,
+          type: booking.track.type,
+          date: booking.date,
+          startHour: booking.startHour,
+          endHour: booking.endHour,
+          status: booking.status,
+        }));
+        setBookings(mappedBookings);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     }
   }, [user]);
 
@@ -263,17 +276,26 @@ const Profile = () => {
   }, [fetchData]);
 
   return (
-    <div className="page-container">
-      <Header />
-      <div style={{ marginBottom: 20 }}>
-        <Descriptions title={<h2>User Info</h2>} size="default" items={items} />
-        <Table
-          dataSource={bookings}
-          columns={columns}
-          rowKey="key"
-          title={() => <h2>Bookings</h2>}
-        />
-      </div>
+    <div>
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <div style={{ marginBottom: 20 }}>
+          <Descriptions
+            title={<h2>User Info</h2>}
+            size="default"
+            items={items}
+          />
+          <Table
+            dataSource={bookings}
+            columns={columns}
+            rowKey="key"
+            title={() => <h2>Bookings</h2>}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,0 +1,90 @@
+header {
+    background-color: #1F2833; /* Matches the theme */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px; /* Increase height to add more space */
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Keep the header on top of other content */
+  }
+  
+  .header-content {
+    margin-left: 100px;
+    margin-right: 100px;
+    width: 100%; /* Ensure it takes up the full width of its container */
+    display: flex;
+    justify-content: space-between; /* Space between logo and actions */
+    align-items: center; /* Vertically center items */
+  }
+  
+  .header-logo img {
+    height: 40px; /* Adjust the logo size as needed */
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center; /* Vertically align buttons */
+  }
+  
+  .menu-button {
+    display: none; /* Hide menu button by default */
+  }
+  
+  /* Navigation Menu Styles */
+  .nav-menu {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    gap: 15px; /* Space between buttons */
+  }
+  
+  .profile-button {
+    margin-right: 15px; /* Space between profile button and other actions */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column; /* Stack items vertically on small screens */
+      align-items: flex-start; /* Align items to the start */
+      padding: 10px; /* Adjust padding for smaller screens */
+    }
+  
+    .menu-button {
+      display: block; /* Show menu button on mobile */
+    }
+  
+    .nav-menu {
+      display: none; /* Hide menu by default */
+      flex-direction: column; /* Stack items vertically */
+      width: 100%; /* Full width for the menu */
+      position: absolute; /* Position it absolutely */
+      top: 60px; /* Position it below the header */
+      left: 0;
+      background-color: #1F2833; /* Match the header background */
+      padding: 20px; /* Add padding inside the menu */
+      box-sizing: border-box; /* Include padding in the width calculation */
+    }
+  
+    .nav-menu.open {
+      display: flex; /* Show menu when open */
+    }
+  
+    .nav-menu a {
+      color: #ffffff; /* Text color for links */
+      text-decoration: none; /* Remove underline from links */
+      padding: 10px 0; /* Padding for each link */
+      display: block; /* Block display for each link */
+    }
+  
+    .nav-menu a:hover {
+      text-decoration: underline; /* Underline on hover */
+    }
+  
+    .header-logo img {
+      height: 40px; /* Adjust logo size for smaller screens */
+    }
+}
