@@ -39,6 +39,18 @@ header {
     display: flex;
     align-items: center; /* Vertically align items */
     gap: 15px; /* Space between buttons */
+
+    button:hover{
+        scale: 1.1;
+    }
+  }
+
+  .nav-menu button{
+    margin-right: 20px;
+  }
+
+  .nav-menu button:last-child{
+    margin-right: unset;
   }
   
   .profile-button {

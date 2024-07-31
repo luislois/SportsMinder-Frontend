@@ -50,6 +50,7 @@ const Header = ({ isAuthenticated }) => {
               <>
                 <SigninButton />
                 <LoginButton />
+                
               </>
             )}
           </div>

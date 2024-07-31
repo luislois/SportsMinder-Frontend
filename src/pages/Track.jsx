@@ -178,6 +178,13 @@ const Track = () => {
       width: 150,
     },
     {
+        title: "Price",
+        dataIndex: "price",
+        key: "price",
+        align: "center",
+        width: 150,
+      },
+    {
       title: "Status",
       width: 150,
       align: "center",
@@ -238,6 +245,7 @@ const Track = () => {
         date: selectedDate.format("ddd, DD MMM YYYY"),
         startHour,
         endHour: endHourList[index],
+        price: track.price + "€"
       }))
     : [];
 

@@ -1,17 +1,21 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import {
+  Modal,
+  Button,
   Descriptions,
   Table,
   Tag,
   Typography,
   Spin,
+  QRCode,
   App as AntdApp,
 } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { renderTagForSport, renderTagForType } from "../utils/Utils";
 import ApiService from "../utils/ApiService";
+import { BsQrCode } from "react-icons/bs";
 
 const Profile = () => {
   const { modal, notification } = AntdApp.useApp();
@@ -19,6 +23,8 @@ const Profile = () => {
   const { name, last_name, _phone_number, dni, email } = user || [];
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [qrValue, setQrValue] = useState("");
 
   const handleResetPassword = () => {
     modal.confirm({
@@ -61,6 +67,19 @@ const Profile = () => {
         }
       },
     });
+  };
+
+  const showModal = (item) => {
+    setQrValue(item.id + item.date + item.startHour);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   const items = [
@@ -185,6 +204,23 @@ const Profile = () => {
       },
     },
     {
+      title: "QR",
+      key: "Qr",
+      render: (item) => {
+        const canGenerate = item.date === dayjs().format("YYYY-MM-DD");
+        if (true) {
+          return (
+            <Button
+              icon={<BsQrCode />}
+              onClick={() => showModal(item)}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+            </Button>
+          );
+        }
+      },
+    },
+    {
       key: "action",
       render: (item) => {
         const isReserved = item.status === "reserved";
@@ -277,6 +313,14 @@ const Profile = () => {
 
   return (
     <div>
+      <Modal
+        title="QR Code"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <QRCode value={qrValue} />
+      </Modal>
       {loading ? (
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <Spin size="large" />
