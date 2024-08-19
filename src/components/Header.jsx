@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { UserOutlined, MenuOutlined, HomeOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  MenuOutlined,
+  BarChartOutlined,
+} from "@ant-design/icons";
 import { LoginButton, SigninButton } from "./Buttons";
 import logo from "../assets/logo.png";
 import "../styles/Header.css";
@@ -28,10 +32,10 @@ const Header = ({ isAuthenticated }) => {
             style={{ display: "none" }}
           />
           <div className={`nav-menu ${isMenuOpen ? "open" : ""}`}>
-            <Link to="/" onClick={toggleMenu}>
+            <Link to="/stats" onClick={toggleMenu}>
               <Button
                 type="secondary"
-                icon={<HomeOutlined />}
+                icon={<BarChartOutlined />}
                 className="profile-button"
               />
             </Link>
@@ -50,7 +54,6 @@ const Header = ({ isAuthenticated }) => {
               <>
                 <SigninButton />
                 <LoginButton />
-                
               </>
             )}
           </div>

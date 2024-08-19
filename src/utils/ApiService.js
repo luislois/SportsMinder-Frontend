@@ -58,6 +58,26 @@ const ApiService = {
           }
     },
 
+    getBookingCountByTrackId: async (trackId) => {
+        try{
+            const response = await axiosInstance.get(`bookings/track/${trackId}/count`);
+            return response.data;
+        } catch(error){
+            handleApiError(error)
+            throw error
+        }
+    },
+
+    getBookingCountByTrackIdAndDateBetween: async (trackId, startDate, endDate) => {
+        try{
+            const response = await axiosInstance.get(`bookings/track/${trackId}/${startDate}/${endDate}/count`);
+            return response.data;
+        } catch(error){
+            handleApiError(error)
+            throw error
+        }
+    },
+
     getBookingsByTrackIdAndDate: async (trackId, date) => {
         try{
             const response = await axiosInstance.get(`bookings/track/${trackId}/date/${date}`);
