@@ -28,22 +28,32 @@ The SportsMinder frontend is designed to be user-friendly and responsive, provid
 - **Clean and Intuitive Design**: Provides an accessible and aesthetically pleasing interface for managing bookings.
 - **Forms and Tables**: Features forms for creating and updating bookings, with booking information displayed in tables for easy management.
 
-![User Interface](docs/screenshots/ui-screenshot.png)
+![User Interface](docs/screenshots/User_Page.png)
 
 ### Authentication
 - **Auth0 Integration**: Manages user login, registration, and password reset processes, ensuring a secure and smooth user experience.
 
-![Authentication](docs/screenshots/auth-screenshot.png)
+![Authentication]
 
 ### Real-time Updates
 - **Notifications**: Implements real-time updates to keep users informed of booking confirmations, cancellations, and other critical events.
 
-![Real-time Updates](docs/screenshots/realtime-screenshot.png)
+![Real-time Updates]
 
 ### Navigation
 - **React Router**: Provides smooth and efficient navigation between different pages and components within the application.
 
-![Navigation](docs/screenshots/nav-screenshot.png)
+![Navigation]
+
+![Home](docs/screenshots/Home_Page.png)
+
+![Add Track](docs/screenshots/Add_Track.png)
+
+![Track](docs/screenshots/Track_Page_1.png)
+
+![Track](docs/screenshots/Track_Page_2.png)
+
+![Stats](docs/screenshots/Stats_Page.png)
 
 ## Getting Started
 
