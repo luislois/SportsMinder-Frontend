@@ -1,7 +1,8 @@
 # SportsMinder Frontend
-TFG proyect
 
-The frontend is built using React, offering a responsive and intuitive user interface. This document provides an overview of the key features and components, along with setup instructions and related links.
+**TFG Project**
+
+The SportsMinder frontend is built using React, offering a responsive and intuitive user interface. This document provides an overview of the key features, setup instructions, and related links.
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -19,26 +20,30 @@ The frontend is built using React, offering a responsive and intuitive user inte
 
 ## Overview
 
-The frontend of sports minder application is designed to be user-friendly and responsive, providing an efficient way for users to manage bookings and interact with the system.
+The SportsMinder frontend is designed to be user-friendly and responsive, providing an efficient way for users to manage bookings and interact with the system.
 
 ## Key Features
 
 ### User Interface
-- Provides a clean and user-friendly interface for managing bookings.
-- Includes forms for creating and updating bookings.
-- Displays booking information in tables for easy access and management.
+- **Clean and Intuitive Design**: Provides an accessible and aesthetically pleasing interface for managing bookings.
+- **Forms and Tables**: Features forms for creating and updating bookings, with booking information displayed in tables for easy management.
+
+![User Interface](docs/screenshots/ui-screenshot.png)
 
 ### Authentication
-- Integrates with Auth0 to handle user login, registration, and password reset processes.
-- Ensures a seamless and secure user experience.
+- **Auth0 Integration**: Manages user login, registration, and password reset processes, ensuring a secure and smooth user experience.
+
+![Authentication](docs/screenshots/auth-screenshot.png)
 
 ### Real-time Updates
-- Implements real-time updates and notifications.
-- Keeps users informed of booking confirmations, cancellations, and other important events.
+- **Notifications**: Implements real-time updates to keep users informed of booking confirmations, cancellations, and other critical events.
+
+![Real-time Updates](docs/screenshots/realtime-screenshot.png)
 
 ### Navigation
-- Utilizes React Router for smooth and efficient navigation.
-- Enables seamless transition between different pages and components within the application.
+- **React Router**: Provides smooth and efficient navigation between different pages and components within the application.
+
+![Navigation](docs/screenshots/nav-screenshot.png)
 
 ## Getting Started
 
@@ -46,28 +51,29 @@ The frontend of sports minder application is designed to be user-friendly and re
 - Node.js and npm installed on your machine.
 
 ### Installation
-1. Clone the repository:
+1. **Clone the Repository**
     ```sh
-    git clone https://github.com/your-username/project-name-frontend](https://github.com/luislois/SportsMinder-Frontend.git
+    git clone https://github.com/luislois/SportsMinder-Frontend.git
     ```
-2. Navigate to the project directory:
+2. **Navigate to the Project Directory**
     ```sh
     cd SportsMinder-Frontend
     ```
-3. Install the dependencies:
+3. **Install Dependencies**
     ```sh
     npm install
     ```
 
 ### Running the Application
-1. Start the development server:
+1. **Start the Development Server**
     ```sh
     npm start
     ```
-2. Open your browser and navigate to `http://localhost:3000` to see the application in action.
+2. **View the Application**
+   - Open your browser and navigate to `http://localhost:3000` to see the application in action.
 
 ## Related Repositories
-- [Backend Repository](https://github.com/luislois/SportsMinder-Backend) - Handles the backend logic and API endpoints.
+- **Backend Repository**: [SportsMinder Backend](https://github.com/luislois/SportsMinder-Backend) - Handles the backend logic and API endpoints.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
