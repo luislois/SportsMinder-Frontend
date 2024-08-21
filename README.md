@@ -67,7 +67,7 @@ The SportsMinder frontend is designed to be user-friendly and responsive, provid
 ### Running the Application
 1. **Start the Development Server**
     ```sh
-    npm start
+    npm run dev
     ```
 2. **View the Application**
    - Open your browser and navigate to `http://localhost:3000` to see the application in action.
