@@ -33,17 +33,12 @@ The SportsMinder frontend is designed to be user-friendly and responsive, provid
 ### Authentication
 - **Auth0 Integration**: Manages user login, registration, and password reset processes, ensuring a secure and smooth user experience.
 
-![Authentication]
-
 ### Real-time Updates
 - **Notifications**: Implements real-time updates to keep users informed of booking confirmations, cancellations, and other critical events.
 
-![Real-time Updates]
 
 ### Navigation
 - **React Router**: Provides smooth and efficient navigation between different pages and components within the application.
-
-![Navigation]
 
 ![Home](docs/screenshots/Home_Page.png)
 
